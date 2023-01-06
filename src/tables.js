@@ -1,11 +1,12 @@
-var mysql = require('mysql');
+var mysql = require('mysql2');
 
 var con = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: ""
-});
+  password: "password"
+
+})
 
 module.exports.connectdb= function() {
 
@@ -17,4 +18,5 @@ con.connect(function(err) {
     console.log("Database created");
   });
 });
+
 }
