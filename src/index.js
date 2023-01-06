@@ -2,6 +2,7 @@ const express = require('express');//Requiero el modulo
 const morg = require('morgan');
 const path = require('path');
 const engine = require('ejs-mate');
+const db = require('./tables');
 
 const app = express();//Inicializo el modulo
 
@@ -14,7 +15,7 @@ app.set('vistas', path.join(__dirname,'vistas'))//devuelve la carpeta vistas
 
 
 app.use(morg('dev'));//te muestra x consola cada vez q un usuario hace una peticion q es lo q estan pidiendo.
-
+db.connectdb();
 ///RUTAS
 app.use(require('./rutas/index'));//usando la ruta q creamos en carpeta rutas
 
