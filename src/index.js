@@ -13,11 +13,60 @@ app.set('vista engine', 'ejs');//utilizar el motor de plantilla para enviar html
 app.set('vistas', path.join(__dirname,'vistas'))//devuelve la carpeta vistas
 
 
+const{
+    userController,
+    getUserController,
+    loginController,
+} = require('./users');
+
+const{
+    getImagenesController,
+    newImagenesController,
+    getImagenController,
+    deleteImagenesController 
+} = require('./imagenes');
+
+
 
 app.use(morg('dev'));//te muestra x consola cada vez q un usuario hace una peticion q es lo q estan pidiendo.
 db.connectdb();
-///RUTAS
+
+
+///RUTAS de usuario.
 app.use(require('./rutas/index'));//usando la ruta q creamos en carpeta rutas
+app.post('/user', userController);
+app.get('/user/:id', getUserController);
+app.post('/login', loginController)
+
+//rutas de las fotos.
+app.get('/', getImagenesController);
+app.post('/', newImagenesController);
+app.get('/imagenes/:id', getImagenController);
+app.delete('/imagenes/:id', deleteImagenesController);
+
+
+
+
+//Middleware de 404
+app.use((req, res) =>{
+    res.status(404).send({
+        status: 'error',
+        message: 'Not found',
+    });
+});
+
+//Middleware de errores
+app.use((error,req, res,next )=>{
+    console.error(error);
+
+    res.status(error.httpStatus || 500).send({
+        status:'error',
+        message: error.message,
+    });
+});
+
+
+
 
 
 
