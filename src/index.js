@@ -2,7 +2,7 @@ const express = require('express');//Requiero el modulo
 const morg = require('morgan');
 const path = require('path');
 const engine = require('ejs-mate');
-const db = require('./tables');
+const db = require('./db');
 
 const app = express();//Inicializo el modulo
 
