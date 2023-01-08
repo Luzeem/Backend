@@ -27,7 +27,7 @@ const{
 } = require('./imagenes');
 
 
-
+app.use(express.json());//cuando la peticion pase por aqui va a convertir los datos a json.
 app.use(morg('dev'));//te muestra x consola cada vez q un usuario hace una peticion q es lo q estan pidiendo.
 db.connectdb();
 
