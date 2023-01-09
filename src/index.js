@@ -1,19 +1,19 @@
 const express = require('express');//Requiero el modulo
 const morg = require('morgan');
 const path = require('path');
-const engine = require('ejs-mate');
+const multer = require('multer');
+const uuid = require('uuidv4');
 const db = require('./db');
 
 const app = express();//Inicializo el modulo
-
+require('./database');
 
 app.set('port', process.env.PORT || 3000);//Configuramos un puerto en el 3000
-app.engine('ejs',engine);//un nuevo motor de plantilla.
-app.set('vista engine', 'ejs');//utilizar el motor de plantilla para enviar html con funcionalidades.
-app.set('vistas', path.join(__dirname,'vistas'))//devuelve la carpeta vistas
 
+app.set('views', path.join(__dirname,'views'))//devuelve la carpeta vistas
+app.set('view engine', 'ejs');
 
-const{
+/*const{
     userController,
     getUserController,
     loginController,
@@ -33,16 +33,30 @@ db.connectdb();
 
 
 ///RUTAS de usuario.
-app.use(require('./rutas/index'));//usando la ruta q creamos en carpeta rutas
+/*app.use(require('./rutas/index'));//usando la ruta q creamos en carpeta rutas
 app.post('/user', userController);
 app.get('/user/:id', getUserController);
 app.post('/login', loginController)
 
 //rutas de las fotos.
+/*
 app.get('/', getImagenesController);
 app.post('/', newImagenesController);
 app.get('/imagenes/:id', getImagenController);
-app.delete('/imagenes/:id', deleteImagenesController);
+app.delete('/imagenes/:id', deleteImagenesController);*/
+
+
+
+//middlewares(primero pasa por aqui antes de pasar x las rutas)
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: false }));//Para los datos de los formularios
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, 'public/img/uploads'),
+    filename: (req, file, cb, filename) => {
+        cb(null, uuid + path.extname(file.originalname));
+    }
+});
+app.use(multer({storage : storage }).single('image'));
 
 
 
@@ -64,12 +78,13 @@ app.use((error,req, res,next )=>{
         message: error.message,
     });
 });
+//Rutas
+app.use(require('./rutas/index')); 
+
+//Start servidor
+app.listen(app.get('port'), ()=> {
+    console.log(`Servidor en el puerto ${app.get('port')}`);
+});
 
 
 
-
-
-
-app.listen(app.get('port'), () =>{
-    console.log('Servidor en el puerto', app.get('port'));
-});//EScucha mi app en algun puerto y me manda un msm por consola concatenado con el puerto 3000
