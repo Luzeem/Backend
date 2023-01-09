@@ -4,13 +4,13 @@ const path = require('path');
 const multer = require('multer');
 const uuid = require('uuidv4');
 const db = require('./db');
+const morgan = require("morgan")
 
 const app = express();//Inicializo el modulo
-require('./database');
 
 app.set('port', process.env.PORT || 3000);//Configuramos un puerto en el 3000
 
-app.set('views', path.join(__dirname,'views'))//devuelve la carpeta vistas
+app.set('views', path.join(__dirname, 'views'))//devuelve la carpeta vistas
 app.set('view engine', 'ejs');
 
 /*const{
@@ -45,7 +45,8 @@ app.post('/', newImagenesController);
 app.get('/imagenes/:id', getImagenController);
 app.delete('/imagenes/:id', deleteImagenesController);*/
 
-
+console.log("iniciando la base de datos")
+db.connectdb()
 
 //middlewares(primero pasa por aqui antes de pasar x las rutas)
 app.use(morgan('dev'));
@@ -56,13 +57,13 @@ const storage = multer.diskStorage({
         cb(null, uuid + path.extname(file.originalname));
     }
 });
-app.use(multer({storage : storage }).single('image'));
+app.use(multer({ storage: storage }).single('image'));
 
 
 
 
 //Middleware de 404
-app.use((req, res) =>{
+app.use((req, res) => {
     res.status(404).send({
         status: 'error',
         message: 'Not found',
@@ -70,19 +71,19 @@ app.use((req, res) =>{
 });
 
 //Middleware de errores
-app.use((error,req, res,next )=>{
+app.use((error, req, res, next) => {
     console.error(error);
 
     res.status(error.httpStatus || 500).send({
-        status:'error',
+        status: 'error',
         message: error.message,
     });
 });
 //Rutas
-app.use(require('./rutas/index')); 
+app.use(require('./rutas/index'));
 
 //Start servidor
-app.listen(app.get('port'), ()=> {
+app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
 

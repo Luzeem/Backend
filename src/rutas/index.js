@@ -1,7 +1,6 @@
 const { Router} = require('express');
 const ruta = Router();
 
-const Image = require('../archivos/image');
 
 ruta.get('/', (req, res) => {
    res.send('Index');
