@@ -29,6 +29,7 @@ ruta.post('/upload', async (req, res) => {
 
     res.redirect('/');
 });
+
 //mostrar una imagen
 ruta.get('/image/:id', (req, res)=>{
 

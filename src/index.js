@@ -2,14 +2,14 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const uuid = require('uuidv4');
-
+const db = require("./database")
 
 const morgan = require('morgan');
 
 
 //incializacion
 const app = express();
-require('./database');
+db.connectdb();
 
 //Configuraciones
 
