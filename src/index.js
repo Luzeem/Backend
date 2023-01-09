@@ -1,50 +1,21 @@
-const express = require('express');//Requiero el modulo
-const morg = require('morgan');
+const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const uuid = require('uuidv4');
-const db = require('./db');
+const db = require("./database")
 
-const app = express();//Inicializo el modulo
-require('./database');
-
-app.set('port', process.env.PORT || 3000);//Configuramos un puerto en el 3000
-
-app.set('views', path.join(__dirname,'views'))//devuelve la carpeta vistas
-app.set('view engine', 'ejs');
-
-/*const{
-    userController,
-    getUserController,
-    loginController,
-} = require('./users');
-
-const{
-    getImagenesController,
-    newImagenesController,
-    getImagenController,
-    deleteImagenesController 
-} = require('./imagenes');
+const morgan = require('morgan');
 
 
-app.use(express.json());//cuando la peticion pase por aqui va a convertir los datos a json.
-app.use(morg('dev'));//te muestra x consola cada vez q un usuario hace una peticion q es lo q estan pidiendo.
+//incializacion
+const app = express();
 db.connectdb();
 
+//Configuraciones
 
-///RUTAS de usuario.
-/*app.use(require('./rutas/index'));//usando la ruta q creamos en carpeta rutas
-app.post('/user', userController);
-app.get('/user/:id', getUserController);
-app.post('/login', loginController)
-
-//rutas de las fotos.
-/*
-app.get('/', getImagenesController);
-app.post('/', newImagenesController);
-app.get('/imagenes/:id', getImagenController);
-app.delete('/imagenes/:id', deleteImagenesController);*/
-
+app.set('port', process.env.PORT || 3000); 
+app.set('views', path.join(__dirname, 'views'));//unir carpeta vistas
+app.set('view engine', 'ejs');
 
 
 //middlewares(primero pasa por aqui antes de pasar x las rutas)
@@ -58,33 +29,16 @@ const storage = multer.diskStorage({
 });
 app.use(multer({storage : storage }).single('image'));
 
+//Variables Globales
 
 
-
-//Middleware de 404
-app.use((req, res) =>{
-    res.status(404).send({
-        status: 'error',
-        message: 'Not found',
-    });
-});
-
-//Middleware de errores
-app.use((error,req, res,next )=>{
-    console.error(error);
-
-    res.status(error.httpStatus || 500).send({
-        status:'error',
-        message: error.message,
-    });
-});
 //Rutas
 app.use(require('./rutas/index')); 
+
+//Archivos estaticos (donde van las imagenes subidas)
+
 
 //Start servidor
 app.listen(app.get('port'), ()=> {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
-
-
-
